@@ -8,7 +8,6 @@ export const generateTokens = async(userId) =>{
     return {accessToken, refreshToken};
 }
 
-
 export const setCookies = (
   res,
   accessToken,
