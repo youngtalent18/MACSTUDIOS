@@ -9,35 +9,6 @@ export const userStore = create((set) => ({
 
   setUser: (user) => set({ user }),
 
-  // ================= REGISTER =================
-  register: async ({ name, email, password, confirmPassword }) => {
-    set({ loading: true });
-
-    if (password !== confirmPassword) {
-      set({ loading: false });
-      throw new Error("Passwords do not match");
-    }
-
-    try {
-      const res = await api.post("/user/register", {
-        name,
-        email,
-        password,
-      });
-
-      set({ loading: false });
-
-      toast.success(res.data.message || "account created successfully");
-
-      return res.data;
-    } catch (error) {
-      set({ loading: false });
-
-      console.error("Register error:", error);
-      throw error;
-    }
-  },
-
   // ================= LOGIN =================
   signIn: async ({ email, password }) => {
     set({ loading: true });
