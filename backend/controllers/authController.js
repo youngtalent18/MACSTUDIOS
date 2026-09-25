@@ -1,6 +1,6 @@
-import User from "../models/user.js";
+import User from "../models/userModel.js";
 import { generateTokens,setCookies } from "../lib/utils/generateToken.js";
-import redis from "../config/redis.js";
+import jwt from "jsonwebtoken";
 
 const buildUserPayload = (user) => ({
     _id: user._id,
@@ -10,16 +10,6 @@ const buildUserPayload = (user) => ({
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
 });
-
-const storeRefreshToken = async (userId, refreshToken) => {
-  await redis.set(
-    `refresh_token:${userId}`,
-    refreshToken,
-    {
-      EX: 7 * 24 * 60 * 60,
-    }
-  );
-};
 
 export const registerUser = async(req, res) => {
     try {
@@ -102,6 +92,13 @@ export const loginUser = async (req,res) => {
             });
         }
 
+        if (user.role !== "admin") {
+            return res.status(403).json({
+                success: false,
+                message: "Administrator access is required.",
+            });
+        }
+
         const isMatch =
             await user.comparePassword(password);
 
@@ -116,12 +113,6 @@ export const loginUser = async (req,res) => {
         await user.save();
 
         const {accessToken,refreshToken} = await generateTokens(user._id);
-        
-            // STORE REFRESH TOKEN
-            await storeRefreshToken(
-              user._id,
-              refreshToken
-            );
         
             // SET COOKIES
             setCookies(
@@ -152,13 +143,6 @@ export const loginUser = async (req,res) => {
 
 export const logoutUser = async (req, res) => {
   try {
-    // DELETE REFRESH TOKEN
-    if (req.user?._id) {
-      await redis.del(
-        `refresh_token:${req.user._id}`
-      );
-    }
-
     // CLEAR ACCESS TOKEN COOKIE
     res.clearCookie("accessToken", {
       httpOnly: true,
@@ -207,18 +191,6 @@ export const refresh_token = async (req,res) => {
       refreshToken,
       process.env.REFRESH_TOKEN_SECRET
     );
-
-    // CHECK REDIS TOKEN
-    const storedToken = await redis.get(
-      `refresh_token:${decoded.userId}`
-    );
-
-    if (storedToken !== refreshToken) {
-      return res.status(403).json({
-        success: false,
-        message: "Invalid refresh token",
-      });
-    }
 
     // CREATE NEW ACCESS TOKEN
     const accessToken = jwt.sign(
