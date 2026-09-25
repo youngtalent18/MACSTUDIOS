@@ -1,34 +1,23 @@
-import { Route, BrowserRouter as Router, Routes} from "react-router-dom"
-// import { Loader2 } from "lucide-react"
-
-// function LoadingScreen() {
-//   return (
-//     <div className="min-h-screen flex items-center justify-center">
-
-//       <div className="flex flex-col items-center gap-3">
-
-//         <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
-
-//         <p className="text-sm text-slate-500">
-//           Loading...
-//         </p>
-
-//       </div>
-
-//     </div>
-//   );
-// }
+import {BrowserRouter as Router, Routes, Route} from "react-router-dom"
+import Dashboard from "./pages/admin/Dashboard";
+import Home from "./pages/client/Home";
+import Header from "./layout/Header";
+import Services from "./pages/client/Services"
 
 function App() {
+    
+    return(
+        <Router>
+            <Header />
+            <Routes>
+                <Route path="/admin" element={<Dashboard/>}/>
 
-  return (
-    <Router>
-      <Routes>
-        <Route />
+                <Route path="/" element={<Home />}/>
 
-      </Routes>
-    </Router>
-  )
+                <Route path="/services" element={<Services/>}/>
+            </Routes>
+        </Router>
+    )
 }
 
-export default App
+export default App;
