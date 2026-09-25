@@ -4,6 +4,7 @@ import morgan from "morgan"
 import cors from "cors"
 import cookieParser from "cookie-parser"
 import authRoute from "./routes/authRoute.js"
+import youtube from "./routes/youtube.js"
 
 const app = express();
 
@@ -27,6 +28,6 @@ app.use(express.urlencoded({extended: true}));
 app.use(morgan("dev"));
 
 app.use("/api/user", authRoute);
-
+app.use("/api/youtube", youtube);
 
 export default app;

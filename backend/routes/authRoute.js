@@ -1,10 +1,9 @@
 import express from "express"
 import {protectRoute, adminRoute} from "../middleware/protectRoute.js"
-import { getUserProfile, loginUser, logoutUser, refresh_token, registerUser } from "../controllers/authController";
+import { getUserProfile, loginUser, logoutUser, refresh_token } from "../controllers/authController.js";
 
 const router = express.Router();
 
-router.post("/register", registerUser)
 router.post("/login", loginUser)
 router.get("/profile", protectRoute, adminRoute, getUserProfile);
 router.post("/logout", logoutUser)
