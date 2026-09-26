@@ -8,15 +8,27 @@ import {
   Phone,
 } from "lucide-react";
 import { useState } from "react";
+import api from "../../lib/axios.js";
 
 const Contact = () => {
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // API connection will be added later
-    setSubmitted(true);
+    const form = e.currentTarget;
+    setSubmitting(true);
+    setSubmitError("");
+    try {
+      await api.post("/contact", Object.fromEntries(new FormData(form)));
+      setSubmitted(true);
+      form.reset();
+    } catch (error) {
+      setSubmitError(error.response?.data?.message || "We couldn't send your message. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -417,17 +429,21 @@ const Contact = () => {
                       enquiry.
                     </p>
 
+                    <div className="flex flex-col items-stretch gap-3">
+                    {submitError && <p role="alert" className="max-w-xs text-xs text-red-400">{submitError}</p>}
                     <button
                       type="submit"
+                      disabled={submitting}
                       className="group inline-flex w-full items-center justify-center gap-4 bg-orange-500 px-7 py-4 text-xs font-bold uppercase tracking-[0.2em] text-black transition hover:bg-white sm:w-auto"
                     >
-                      Send Message
+                      {submitting ? "Sending..." : "Send Message"}
 
                       <ArrowRight
                         size={16}
                         className="transition group-hover:translate-x-1"
                       />
                     </button>
+                    </div>
                   </div>
                 </form>
               )}

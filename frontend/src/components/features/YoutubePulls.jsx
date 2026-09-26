@@ -6,6 +6,7 @@ import {
   Play,
 } from "lucide-react";
 import { FaYoutube } from "react-icons/fa";
+import api from "../../lib/axios.js";
 
 const CHANNEL_URL = "https://www.youtube.com/@macstudios101";
 
@@ -20,13 +21,8 @@ const YouTubeLatest = () => {
         setLoading(true);
         setError("");
 
-        const response = await fetch("/api/youtube/latest");
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch YouTube videos.");
-        }
-
-        const data = await response.json();
+        const response = await api.get("/youtube/latest");
+        const data = response.data;
 
         if (!data.success) {
           throw new Error(

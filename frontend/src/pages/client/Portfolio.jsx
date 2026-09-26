@@ -2,6 +2,8 @@ import { motion } from "framer-motion";
 import { ArrowUpRight, Play, X } from "lucide-react";
 import { useState } from "react";
 import { FaYoutube } from "react-icons/fa";
+import { useEffect } from "react";
+import api from "../../lib/axios.js";
 
 const PROJECTS = [
   {
@@ -52,7 +54,21 @@ const PROJECTS = [
 ];
 
 const Portfolio = () => {
+  const [projects, setProjects] = useState(PROJECTS);
   const [selectedProject, setSelectedProject] = useState(null);
+  useEffect(() => {
+    api.get("/portfolio").then(({ data }) => {
+      const items = data.data || [];
+      if (items.length) setProjects(items.map((project) => ({
+        ...project,
+        id: project.slug,
+        type: project.type || "image",
+        videoId: project.youtubeVideoId || project.youtubeUrl?.split("v=")[1]?.split("&")[0],
+        src: project.type === "video" ? project.video : project.image,
+      })));
+      else setProjects([]);
+    }).catch((error) => console.error("Portfolio API unavailable:", error));
+  }, []);
 
   return (
     <main className="bg-black text-white overflow-hidden">
@@ -120,7 +136,7 @@ const Portfolio = () => {
       {/* PROJECTS */}
       <section className="mx-auto max-w-7xl px-6 py-20 md:px-10 lg:px-12">
         <div className="space-y-24 md:space-y-32">
-          {PROJECTS.map((project, index) => {
+          {projects.map((project, index) => {
             const isReversed = index % 2 !== 0;
 
             return (
@@ -161,7 +177,7 @@ const Portfolio = () => {
 
                     {project.type === "youtube" && (
                       <img
-                        src={`https://img.youtube.com/vi/${project.videoId}/maxresdefault.jpg`}
+                        src={project.image || `https://img.youtube.com/vi/${project.videoId}/maxresdefault.jpg`}
                         alt={project.title}
                         className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
                       />

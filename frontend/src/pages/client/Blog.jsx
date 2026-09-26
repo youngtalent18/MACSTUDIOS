@@ -6,6 +6,8 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import api from "../../lib/axios.js";
 
 const BLOG_POSTS = [
   {
@@ -87,8 +89,23 @@ const fadeUp = {
 };
 
 const Blog = () => {
-  const featuredPost = BLOG_POSTS.find((post) => post.featured);
-  const regularPosts = BLOG_POSTS.filter((post) => !post.featured);
+  const [posts, setPosts] = useState(BLOG_POSTS);
+  useEffect(() => {
+    api.get("/blog").then(({ data }) => {
+      const items = data.data || [];
+      if (items.length) setPosts(items.map((post, index) => ({
+        ...post,
+        id: post.slug,
+        date: post.publishedAt ? new Intl.DateTimeFormat("en", { month: "long", day: "2-digit", year: "numeric" }).format(new Date(post.publishedAt)) : "Recently published",
+        readTime: `${Math.max(1, Math.ceil((post.content || "").split(/\s+/).length / 200))} min read`,
+        image: post.image || BLOG_POSTS[index % BLOG_POSTS.length].image,
+        featured: Boolean(post.featured),
+      })));
+      else setPosts([]);
+    }).catch((error) => console.error("Blog API unavailable:", error));
+  }, []);
+  const featuredPost = posts.find((post) => post.featured) || posts[0];
+  const regularPosts = posts.filter((post) => post !== featuredPost);
 
   return (
     <main className="overflow-hidden bg-black text-white">

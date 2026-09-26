@@ -1,5 +1,7 @@
 import { motion } from "framer-motion";
 import { Quote, Star } from "lucide-react";
+import { useEffect, useState } from "react";
+import api from "../../lib/axios.js";
 
 const TESTIMONIALS = [
   {
@@ -26,6 +28,20 @@ const TESTIMONIALS = [
 ];
 
 const Testimonials = () => {
+  const [testimonials, setTestimonials] = useState(TESTIMONIALS);
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [reviewNotice, setReviewNotice] = useState("");
+  const [reviewError, setReviewError] = useState("");
+  useEffect(() => {
+    api.get("/reviews").then(({ data }) => setTestimonials(data.data || [])).catch((error) => console.error("Reviews API unavailable:", error));
+  }, []);
+  const submitReview = async (event) => {
+    event.preventDefault(); const form = event.currentTarget;
+    const payload = Object.fromEntries(new FormData(form)); payload.rating = Number(payload.rating);
+    setReviewNotice(""); setReviewError("");
+    try { await api.post("/reviews", payload); form.reset(); setShowReviewForm(false); setReviewNotice("Thanks for sharing your experience. Your review is awaiting approval."); }
+    catch (error) { setReviewError(error.response?.data?.message || "Unable to submit your review. Please try again."); }
+  };
   return (
     <section className="bg-black px-6 py-20 text-white md:px-12 md:py-24 lg:px-15">
 
@@ -89,9 +105,9 @@ const Testimonials = () => {
         className="grid gap-4 md:grid-cols-3"
       >
 
-        {TESTIMONIALS.map((testimonial, index) => (
+        {testimonials.map((testimonial, index) => (
           <motion.article
-            key={index}
+            key={testimonial._id || index}
             variants={{
               hidden: {
                 opacity: 0,
@@ -173,7 +189,24 @@ const Testimonials = () => {
           </motion.article>
         ))}
 
+        {testimonials.length === 0 && <p className="border border-white/10 p-8 text-sm text-white/40 md:col-span-3">Client reviews will appear here after they have been approved.</p>}
+
       </motion.div>
+
+      <div className="mt-6 flex flex-wrap items-center gap-3">
+        <span className="h-px w-8 bg-orange-500" />
+        <p className="text-[10px] uppercase tracking-[0.2em] text-white/30">Worked with us? Share your experience.</p>
+        <button onClick={() => setShowReviewForm(!showReviewForm)} className="ml-auto border border-white/15 px-4 py-2 text-[10px] font-bold uppercase tracking-[.15em] text-white/60 transition hover:border-orange-500 hover:text-orange-400">{showReviewForm ? "Close" : "Write a review"}</button>
+      </div>
+      {reviewNotice && <p role="status" className="mt-5 border border-emerald-500/20 bg-emerald-500/5 p-4 text-xs text-emerald-300">{reviewNotice}</p>}
+      {showReviewForm && <form onSubmit={submitReview} className="mt-5 grid gap-4 border border-white/10 bg-white/[.02] p-5 sm:grid-cols-2">
+        <input name="name" required maxLength={120} placeholder="Your name" className="border border-white/10 bg-black px-4 py-3 text-sm outline-none focus:border-orange-500" />
+        <input name="service" maxLength={120} placeholder="Service (optional)" className="border border-white/10 bg-black px-4 py-3 text-sm outline-none focus:border-orange-500" />
+        <select name="rating" required defaultValue="5" className="border border-white/10 bg-black px-4 py-3 text-sm text-white/70 outline-none focus:border-orange-500"><option value="5">5 stars</option><option value="4">4 stars</option><option value="3">3 stars</option><option value="2">2 stars</option><option value="1">1 star</option></select>
+        <textarea name="message" required maxLength={3000} rows={3} placeholder="Tell us about your experience" className="border border-white/10 bg-black px-4 py-3 text-sm outline-none focus:border-orange-500 sm:col-span-2" />
+        {reviewError && <p role="alert" className="text-xs text-red-400 sm:col-span-2">{reviewError}</p>}
+        <button className="w-fit bg-orange-500 px-5 py-3 text-[10px] font-bold uppercase tracking-[.15em] text-black hover:bg-white">Submit for review</button>
+      </form>}
 
       <motion.div
         initial={{ opacity: 0, y: 30 }}

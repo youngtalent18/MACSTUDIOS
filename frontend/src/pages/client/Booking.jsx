@@ -8,6 +8,7 @@ import {
   Phone,
 } from "lucide-react";
 import { useState } from "react";
+import api from "../../lib/axios.js";
 
 const SERVICES = [
   "Photography",
@@ -22,12 +23,32 @@ const SERVICES = [
 
 const Booking = () => {
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // API submission will be added later
-    setSubmitted(true);
+    const form = e.currentTarget;
+    const values = Object.fromEntries(new FormData(form));
+    setSubmitting(true);
+    setSubmitError("");
+    try {
+      await api.post("/bookings", {
+        fullName: values.name,
+        phone: values.phone,
+        email: values.email,
+        service: values.service,
+        preferredDate: values.date || undefined,
+        budget: values.budget,
+        message: values.message,
+      });
+      setSubmitted(true);
+      form.reset();
+    } catch (error) {
+      setSubmitError(error.response?.data?.message || "We couldn't submit your request. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -322,6 +343,7 @@ const Booking = () => {
                         id="email"
                         name="email"
                         type="email"
+                        required
                         placeholder="you@example.com"
                         className="w-full border border-white/10 bg-black px-4 py-4 text-sm text-white outline-none transition placeholder:text-white/20 focus:border-orange-500"
                       />
@@ -436,17 +458,21 @@ const Booking = () => {
                       provided.
                     </p>
 
+                    <div className="flex flex-col items-stretch gap-3">
+                    {submitError && <p role="alert" className="max-w-xs text-xs text-red-400">{submitError}</p>}
                     <button
                       type="submit"
+                      disabled={submitting}
                       className="group inline-flex w-full items-center justify-center gap-4 bg-orange-500 px-7 py-4 text-xs font-bold uppercase tracking-[0.2em] text-black transition hover:bg-white sm:w-auto"
                     >
-                      Submit Request
+                      {submitting ? "Sending..." : "Submit Request"}
 
                       <ArrowRight
                         size={16}
                         className="transition group-hover:translate-x-1"
                       />
                     </button>
+                    </div>
                   </div>
                 </form>
               )}

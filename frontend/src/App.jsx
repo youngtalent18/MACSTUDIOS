@@ -10,14 +10,18 @@ import Booking from "./pages/client/Booking"
 import Footer from "./components/features/Footer";
 import Contact from "./pages/client/Contact";
 import Portfolio from "./pages/client/Portfolio";
+import BlogArticle from "./pages/client/BlogArticle";
+import { Toaster } from "react-hot-toast";
+import { useLocation } from "react-router-dom";
 
 function App() {
-    
+    const location = useLocation();
+    const isAdmin = location.pathname.startsWith("/admin");
     return(
-        <Router>
-            <Header />
+        <>
+            {!isAdmin && <Header />}
             <Routes>
-                <Route path="/admin" element={<Dashboard/>}/>
+                <Route path="/admin/*" element={<Dashboard/>}/>
 
                 <Route path="/" element={<Home />}/>
 
@@ -26,6 +30,7 @@ function App() {
                 <Route path="/about" element={<About/>}/>   
 
                 <Route path="/blog" element={<Blog />} />
+                <Route path="/blog/:slug" element={<BlogArticle />} />
 
                 <Route path="*" element={<NotFound/>}/>
 
@@ -35,9 +40,12 @@ function App() {
 
                 <Route path="/booking" element={<Booking />} />
             </Routes>
-            <Footer />
-        </Router>
+            {!isAdmin && <Footer />}
+            <Toaster position="top-right" toastOptions={{ style: { background: "#151515", color: "#fff", border: "1px solid #333" } }} />
+        </>
     )
 }
 
-export default App;
+function AppRouter() { return <Router><App /></Router>; }
+
+export default AppRouter;
