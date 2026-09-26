@@ -18,10 +18,10 @@ const Hero = () => {
       <div className="absolute inset-0 bg-black/40" />
 
       {/* Left-to-right gradient */}
-      <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/10 to-black/70" />
+      <div className="absolute inset-0 bg-linear-to-r from-black/90 via-black/10 to-black/70" />
 
       {/* Bottom gradient */}
-      <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/50 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-black/50 to-transparent" />
 
       {/* Content */}
       <div className="relative z-10 mx-auto w-full max-w-7xl px-6 py-24 md:px-10">
@@ -82,7 +82,7 @@ const Hero = () => {
           <div className="h-2 w-1 rounded-full bg-white/70 animate-bounce" />
         </div>
 
-        <div className="mt-3 h-8 w-px bg-gradient-to-b from-white/50 to-transparent" />
+        <div className="mt-3 h-8 w-px bg-linear-to-b from-white/50 to-transparent" />
       </motion.div>
     </section>
   );

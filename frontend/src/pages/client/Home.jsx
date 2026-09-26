@@ -1,5 +1,4 @@
 import Featured from '../../components/features/Featured'
-import Footer from '../../components/features/Footer'
 import Hero from '../../components/features/Hero'
 import Snapshot from '../../components/features/Snapshot'
 import Testimonials from '../../components/features/Testimonials'
@@ -13,7 +12,6 @@ const Home = () => {
       <Featured />
       <Testimonials />
       <YoutubePulls />
-      <Footer />
     </>
   )
 }

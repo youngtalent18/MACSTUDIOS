@@ -82,14 +82,7 @@ const Featured = () => {
     });
   };
 
-  // ============================================================
-  // MEDIA RENDERER
-  // ============================================================
-
   const renderMedia = (project, mobile = false) => {
-    // ----------------------------------------------------------
-    // YOUTUBE
-    // ----------------------------------------------------------
 
     if (project.type === "youtube") {
       const embedUrl = `https://www.youtube.com/embed/${project.videoId}`;
@@ -107,10 +100,6 @@ const Featured = () => {
       );
     }
 
-    // ----------------------------------------------------------
-    // MP4 VIDEO
-    // ----------------------------------------------------------
-
     if (project.type === "video") {
       return (
         <video
@@ -123,9 +112,6 @@ const Featured = () => {
       );
     }
 
-    // ----------------------------------------------------------
-    // IMAGE
-    // ----------------------------------------------------------
 
     if (project.type === "image") {
       return (
@@ -144,17 +130,8 @@ const Featured = () => {
     return null;
   };
 
-  // ============================================================
-  // RETURN
-  // ============================================================
-
   return (
     <section className="bg-black px-6 py-20 text-white md:px-10 md:py-24 lg:px-15">
-
-      {/* ======================================================
-          HEADER
-      ====================================================== */}
-
       <motion.div
         initial={{ opacity: 0, y: 50 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -199,10 +176,6 @@ const Featured = () => {
 
       </motion.div>
 
-      {/* ======================================================
-          MOBILE CAROUSEL
-      ====================================================== */}
-
       <div className="md:hidden">
 
         <div
@@ -220,31 +193,22 @@ const Featured = () => {
             return (
               <article
                 key={index}
-                className="group w-[85vw] max-w-[390px] shrink-0 snap-center"
+                className="group w-[85vw] max-w-97.5 shrink-0 snap-center"
               >
 
-                {/* ==================================================
-                    MEDIA
-                ================================================== */}
-
-                <div className="relative aspect-[4/5] overflow-hidden border border-white/10 bg-zinc-950">
+                <div className="relative aspect-4/5 overflow-hidden border border-white/10 bg-zinc-950">
 
                   {renderMedia(project, true)}
 
                   {/* Gradient */}
 
-                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                  <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent" />
 
                   {/* Number */}
 
                   <div className="pointer-events-none absolute left-5 top-5 z-10 text-xs font-medium tracking-[0.2em] text-white/50">
                     {String(index + 1).padStart(2, "0")}
                   </div>
-
-                  {/* ==================================================
-                      WATCH ON YOUTUBE
-                  ================================================== */}
-
                   {project.type === "youtube" && (
                     <a
                       href={youtubeUrl}
@@ -261,10 +225,6 @@ const Featured = () => {
                     </a>
                   )}
 
-                  {/* ==================================================
-                      CATEGORY
-                  ================================================== */}
-
                   <div className="pointer-events-none absolute bottom-5 left-5 z-10">
                     <p className="text-[9px] font-medium uppercase tracking-[0.25em] text-orange-500">
                       {project.category}
@@ -272,10 +232,6 @@ const Featured = () => {
                   </div>
 
                 </div>
-
-                {/* ==================================================
-                    INFO
-                ================================================== */}
 
                 <div className="mt-4">
 
@@ -310,10 +266,6 @@ const Featured = () => {
           })}
 
         </div>
-
-        {/* ======================================================
-            MOBILE CONTROLS
-        ====================================================== */}
 
         <div className="mt-5 flex items-center justify-between">
 
@@ -362,10 +314,6 @@ const Featured = () => {
 
       </div>
 
-      {/* ======================================================
-          DESKTOP ZIGZAG
-      ====================================================== */}
-
       <div className="hidden space-y-20 md:block md:space-y-28 lg:space-y-36">
 
         {PROJECTS.map((project, index) => {
@@ -403,10 +351,6 @@ const Featured = () => {
               }`}
             >
 
-              {/* ==================================================
-                  MEDIA
-              ================================================== */}
-
               <div className="md:col-span-8">
 
                 <div className="relative aspect-video overflow-hidden border border-white/10 bg-zinc-950">
@@ -422,10 +366,6 @@ const Featured = () => {
                   <div className="pointer-events-none absolute left-5 top-5 z-10 text-xs font-medium tracking-[0.2em] text-white/40">
                     {String(index + 1).padStart(2, "0")}
                   </div>
-
-                  {/* ==================================================
-                      WATCH ON YOUTUBE
-                  ================================================== */}
 
                   {project.type === "youtube" && (
                     <a
@@ -446,10 +386,6 @@ const Featured = () => {
                 </div>
 
               </div>
-
-              {/* ==================================================
-                  CONTENT
-              ================================================== */}
 
               <div
                 className={`md:col-span-4 ${
@@ -486,10 +422,6 @@ const Featured = () => {
                     personality and attention to detail.
                   </p>
 
-                  {/* ==================================================
-                      WATCH ON YOUTUBE
-                  ================================================== */}
-
                   {project.type === "youtube" && (
                     <a
                       href={youtubeUrl}
@@ -521,11 +453,6 @@ const Featured = () => {
         })}
 
       </div>
-
-      {/* ======================================================
-          BOTTOM CTA
-      ====================================================== */}
-
       <motion.div
         initial={{
           opacity: 0,

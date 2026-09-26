@@ -518,7 +518,7 @@ const Footer = () => {
 
             <Link
               to="/booking"
-              className="group inline-flex items-center gap-2 rounded-full bg-orange-500 px-6 py-3 text-sm font-bold text-white transition hover:bg-orange-600"
+              className="group inline-flex items-center gap-2 rounded-full bg-orange-500/69 px-6 py-3 text-sm font-bold text-white transition hover:bg-orange-600"
             >
 
               Start a Project
@@ -535,11 +535,6 @@ const Footer = () => {
         </motion.div>
 
       </div>
-
-
-      {/* ======================================================
-          BOTTOM BAR
-      ====================================================== */}
 
       <motion.div
         initial={{
