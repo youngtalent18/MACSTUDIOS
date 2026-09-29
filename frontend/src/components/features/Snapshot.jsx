@@ -119,10 +119,6 @@ const Snapshot = () => {
                 }`}
               >
                 <Link
-                  to={`/${service.name
-                    .toLowerCase()
-                    .replace(/ & /g, "-")
-                    .replace(/\s+/g, "-")}`}
                   className="group relative flex h-full min-h-full flex-col justify-between overflow-hidden border border-white/10 bg-black p-6 transition-all duration-700 md:p-7"
                 >
                   {/* Background Image */}

@@ -18,7 +18,7 @@ const SERVICES = [
   "Commercials",
   "Design & Printing",
   "Social Media Management",
-  "YouTube Content / Channel Management",
+  "Software Development/Website Development",
 ];
 
 const Booking = () => {
@@ -62,10 +62,10 @@ const Booking = () => {
         />
 
         <div className="absolute inset-0 bg-black/65" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/50 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/20" />
+        <div className="absolute inset-0 bg-linear-to-r from-black via-black/50 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-black via-transparent to-black/20" />
 
-        <div className="absolute left-0 top-0 h-full w-[3px] bg-orange-500" />
+        <div className="absolute left-0 top-0 h-full w-0.75 bg-orange-500" />
 
         <div className="relative flex min-h-[65vh] items-end">
           <div className="mx-auto w-full max-w-7xl mt-10 px-6 pb-16 md:px-10 lg:px-12 lg:pb-24">
@@ -246,7 +246,7 @@ const Booking = () => {
               className="lg:col-span-8"
             >
               {submitted ? (
-                <div className="flex min-h-[600px] flex-col items-center justify-center border border-white/10 bg-[#090909] p-8 text-center">
+                <div className="flex min-h-150 flex-col items-center justify-center border border-white/10 bg-[#090909] p-8 text-center">
                   <div className="flex h-16 w-16 items-center justify-center rounded-full bg-orange-500 text-black">
                     <CheckCircle2 size={30} />
                   </div>
