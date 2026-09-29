@@ -7,6 +7,7 @@ import authRoute from "./routes/authRoute.js"
 import youtube from "./routes/youtube.js"
 import adminRoute from "./routes/adminRoute.js"
 import { bookingRoutes, contactRoutes, reviewRoutes, blogRoutes, portfolioRoutes } from "./routes/resourceRoutes.js"
+import seoRoutes from "./routes/seoRoutes.js"
 
 const app = express();
 
@@ -37,6 +38,7 @@ app.use("/api/reviews", reviewRoutes);
 app.use("/api/blog", blogRoutes);
 app.use("/api/portfolio", portfolioRoutes);
 app.use("/api/admin", adminRoute);
+app.use(seoRoutes);
 
 app.use((err, _req, res, _next) => {
   console.error("Unhandled request error:", err);
