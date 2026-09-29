@@ -3,13 +3,16 @@ import mongoose from "mongoose";
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const reply = (res, status, body) => res.status(status).json({ success: status < 400, ...body });
 const pick = (source, fields) => Object.fromEntries(fields.filter((key) => source[key] !== undefined).map((key) => [key, source[key]]));
+const makeSlug = (value) => String(value || "").normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
 export const resourceController = ({ Model, fields, publicFields = fields, publicFilter = {}, order = { createdAt: -1 }, publicCreate = false, statusField }) => ({
   create: async (req, res) => {
     try {
       const data = pick(req.body || {}, publicCreate ? publicFields : fields);
+      if (fields.includes("slug")) data.slug = makeSlug(data.slug || data.title);
       if (data.email && !emailPattern.test(data.email)) return reply(res, 400, { message: "Validation failed", errors: { email: "Please provide a valid email address" } });
       if (Model.modelName === "Review") { data.approved = false; data.featured = false; }
+      if (data.published && fields.includes("publishedAt") && !data.publishedAt) data.publishedAt = new Date();
       const doc = await Model.create(data);
       return reply(res, 201, { message: "Submitted successfully", data: doc });
     } catch (error) { return handleError(res, error); }
@@ -43,7 +46,11 @@ export const resourceController = ({ Model, fields, publicFields = fields, publi
   update: async (req, res) => {
     if (!mongoose.isValidObjectId(req.params.id)) return reply(res, 400, { message: "Invalid id" });
     try {
-      const data = await Model.findByIdAndUpdate(req.params.id, { $set: pick(req.body || {}, fields) }, { new: true, runValidators: true });
+      const updates = pick(req.body || {}, fields);
+      if (fields.includes("slug") && (updates.slug || updates.title)) updates.slug = makeSlug(updates.slug || updates.title);
+      if (updates.published === true && fields.includes("publishedAt") && !updates.publishedAt) updates.publishedAt = new Date();
+      if (updates.published === false && fields.includes("publishedAt")) updates.publishedAt = null;
+      const data = await Model.findByIdAndUpdate(req.params.id, { $set: updates }, { new: true, runValidators: true });
       if (!data) return reply(res, 404, { message: "Record not found" });
       return reply(res, 200, { message: "Updated successfully", data });
     } catch (error) { return handleError(res, error); }

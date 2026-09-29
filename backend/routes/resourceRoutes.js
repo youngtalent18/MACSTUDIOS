@@ -21,23 +21,40 @@ function buildRouter(key, config) {
   if (key === "reviews") {
     router.post("/", handlers.create);
     router.get("/", handlers.list);
-    router.get("/admin", protectRoute, adminRoute, (req, res, next) => { req.admin = true; next(); }, handlers.list);
+    router.get("/admin", protectRoute, adminRoute, setAdmin, handlers.list);
     router.get("/admin/:id", protectRoute, adminRoute, handlers.get);
     router.patch("/admin/:id", protectRoute, adminRoute, handlers.update);
+    router.put("/admin/:id", protectRoute, adminRoute, handlers.update);
     router.delete("/admin/:id", protectRoute, adminRoute, handlers.remove);
+    return router;
+  }
+  if (key === "blog" || key === "portfolio") {
+    router.get("/", handlers.list);
+    router.get("/admin", protectRoute, adminRoute, setAdmin, handlers.list);
+    router.get("/admin/:id", protectRoute, adminRoute, handlers.get);
+    router.post("/admin", protectRoute, adminRoute, handlers.create);
+    router.put("/admin/:id", protectRoute, adminRoute, handlers.update);
+    router.patch("/admin/:id", protectRoute, adminRoute, handlers.update);
+    router.delete("/admin/:id", protectRoute, adminRoute, handlers.remove);
+    router.get("/:slug", handlers.getBySlug);
     return router;
   }
   router.post("/", ...(config.publicCreate ? [handlers.create] : [protectRoute, adminRoute, handlers.create]));
   if (config.publicFilter) router.get("/", handlers.list);
-  else router.get("/", protectRoute, adminRoute, (req, res, next) => { req.admin = true; next(); }, handlers.list);
-  router.get("/admin", protectRoute, adminRoute, (req, res, next) => { req.admin = true; next(); }, handlers.list);
+  else router.get("/", protectRoute, adminRoute, setAdmin, handlers.list);
+  router.get("/admin", protectRoute, adminRoute, setAdmin, handlers.list);
   router.get("/admin/:id", protectRoute, adminRoute, handlers.get);
   if (!config.publicFilter) router.get("/:id", protectRoute, adminRoute, handlers.get);
   if (config.publicFilter?.published) router.get("/:slug", handlers.getBySlug);
-  router.patch(config.publicCreate ? "/:id" : "/:id", protectRoute, adminRoute, handlers.update);
+  router.patch("/admin/:id", protectRoute, adminRoute, handlers.update);
+  router.put("/admin/:id", protectRoute, adminRoute, handlers.update);
+  router.patch("/:id", protectRoute, adminRoute, handlers.update);
+  router.delete("/admin/:id", protectRoute, adminRoute, handlers.remove);
   router.delete("/:id", protectRoute, adminRoute, handlers.remove);
   return router;
 }
+
+const setAdmin = (req, _res, next) => { req.admin = true; next(); };
 
 export const bookingRoutes = buildRouter("bookings", resources.bookings);
 export const contactRoutes = buildRouter("contact", resources.contact);
