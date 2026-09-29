@@ -10,7 +10,8 @@ const Hero = () => {
           src={mac1}
           alt="MACSTUDIOS"
           className="h-full w-full scale-100 object-fit object-[center_38%] blur-[4px]"
-          loading="lazy"
+          loading="eager"
+          fetchPriority="high"
         />
       </div>
 

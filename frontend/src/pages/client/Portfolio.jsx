@@ -3,6 +3,7 @@ import { ArrowUpRight, Play, X } from "lucide-react";
 import { useState } from "react";
 import { FaYoutube } from "react-icons/fa";
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
 import api from "../../lib/axios.js";
 
 const PROJECTS = [
@@ -221,22 +222,19 @@ const Portfolio = () => {
                   </div>
 
                   <h3 className="text-3xl font-black uppercase leading-tight md:text-4xl">
-                    {project.title}
+                    {project.slug ? <Link to={`/portfolio/${encodeURIComponent(project.slug)}`} className="hover:text-orange-400">{project.title}</Link> : project.title}
                   </h3>
 
                   <p className="mt-5 text-sm leading-7 text-white/55 md:text-base">
                     {project.description}
                   </p>
 
-                  <button
-                    onClick={() => setSelectedProject(project)}
-                    className="group mt-8 inline-flex items-center gap-3 text-xs font-bold uppercase tracking-[0.2em] text-white transition hover:text-orange-500"
-                  >
+                  {project.slug ? <Link to={`/portfolio/${encodeURIComponent(project.slug)}`} className="group mt-8 inline-flex items-center gap-3 text-xs font-bold uppercase tracking-[0.2em] text-white transition hover:text-orange-500">
                     View Project
                     <span className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 transition group-hover:border-orange-500 group-hover:bg-orange-500 group-hover:text-black">
                       <ArrowUpRight size={16} />
                     </span>
-                  </button>
+                  </Link> : <button onClick={() => setSelectedProject(project)} className="group mt-8 inline-flex items-center gap-3 text-xs font-bold uppercase tracking-[0.2em] text-white transition hover:text-orange-500">View Project <span className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20"><ArrowUpRight size={16} /></span></button>}
                 </div>
               </motion.article>
             );
